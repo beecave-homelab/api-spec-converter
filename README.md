@@ -1,201 +1,138 @@
-# api-spec-converter
-> This project is looking for a new maintainer! Let us know if you're interested in taking it over.
+# API Specification Converter (Python Port)
 
-[![Share on Twitter][twitter-image]][twitter-link]
+This project is a Python port of the original Node.js-based [api-spec-converter](https://github.com/LucyBot-Inc/api-spec-converter). It aims to provide similar functionality for converting API specifications between various formats, using Python.
 
-[![Chat on gitter][gitter-image]][gitter-link]
-[![NPM version][npm-image]][npm-link]
-[![Build status][travis-image]][travis-link]
+**Current Status:** This port is under development. Core functionality for conversion between Swagger 2.0 and OpenAPI 3.0.x is being implemented.
 
-[![Dependency status][deps-image]][deps-link]
-[![devDependency status][devdeps-image]][devdeps-link]
+## Features (Planned/In-Progress)
 
-Convert between API description formats such as [Swagger](http://swagger.io/) and [RAML](http://raml.org/)
-
-**Currently only supports conversion to OpenAPI(fka Swagger) 2.0 format, and from OpenAPI 2.0 to OpenAPI 3.0.x**
-
-You can also use the online version at https://lucybot-inc.github.io/api-spec-converter/.
+*   Conversion between various API specification formats:
+    *   Swagger 1.x (swagger_1)
+    *   OpenAPI (fka Swagger) 2.0 (swagger_2)
+    *   OpenAPI 3.0.x (openapi_3)
+    *   RAML (raml) - *Planned*
+    *   API Blueprint (api_blueprint) - *Planned*
+    *   Google API Discovery (google) - *Planned*
+    *   WADL (wadl) - *Planned*
+    *   I/O Docs (io_docs) - *Planned*
+*   Command-line interface (CLI).
+*   Library usage for programmatic conversions.
+*   Support for JSON and YAML input/output.
+*   Option to validate specifications.
+*   Option to fill missing required fields with dummy data.
 
 ## Installation
 
-### Command Line
-> Problems? See [issue #132](https://github.com/LucyBot-Inc/api-spec-converter/issues/132)
 ```bash
-npm install -g api-spec-converter
-```
+# Ensure you have Python 3.7+ installed
+# Clone the repository (if not already done)
+# git clone <repository_url>
+# cd api-spec-converter-py # Or your project directory name
 
-### NodeJS/Browser
-```bash
-npm install --save api-spec-converter
+# It's recommended to use a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install the package (e.g., in editable mode for development)
+pip install -e .
 ```
 
 ## Usage
 
 ### Command Line
+
+The CLI script `api-spec-converter-py` will be available after installation.
+
 ```bash
-$ api-spec-converter -h
-
-  Usage: api-spec-converter [options] <URL|filename>
-
-  Convert API descriptions between popular formats.
-
-  Supported formats:
-    * swagger_1
-    * swagger_2
-    * openapi_3
-    * api_blueprint
-    * io_docs
-    * google
-    * raml
-    * wadl
-
-  Options:
-
-    -h, --help              output usage information
-    -V, --version           output the version number
-    -f, --from <format>     Specifies format to convert
-    -t, --to <format>       Specifies output format
-    -s, --syntax [syntax]   Specifies output data syntax: json or yaml. Defaults to json
-    -o, --order [sortOrder] Specifies top fields ordering: openapi or alpha. Defaults to openapi
-    -c, --check             Check if result is valid spec
-    -d, --dummy             Fill missing required fields with dummy data
+api-spec-converter-py --help
 ```
 
-Example:
+**Example:**
+
+Convert a Swagger 2.0 file to OpenAPI 3.0 YAML:
+
 ```bash
-$ api-spec-converter --from=swagger_1 --to=swagger_2 --syntax=yaml --order=alpha https://raw.githubusercontent.com/LucyBot-Inc/api-spec-converter/master/test/input/swagger_1/petstore/pet.json > swagger.json
+api-spec-converter-py --from-format swagger_2 --to-format openapi_3 --syntax yaml path/to/your/swagger_spec.json > openapi_spec.yaml
 ```
 
-### NodeJS
+**Options:**
 
-### Options
-* `from` - source format (see formats below)
-* `to` - desired format (see formats below)
-* `source` - Filename, URL, or JS object for the source
-### Simple example:
-```js
-var Converter = require('api-spec-converter');
+*   `-f, --from-format TEXT`: Specifies the source format (e.g., `swagger_2`, `openapi_3`). (Required)
+*   `-t, --to-format TEXT`: Specifies the target output format. (Required)
+*   `-s, --syntax [json|yaml]`: Specifies output data syntax (default: `json`).
+*   `-o, --order [openapi|alpha|false]`: Specifies top-level field ordering for the output (default: `openapi`).
+*   `-c, --check`: Validates the output specification after conversion.
+*   `-d, --dummy`: Fills missing required fields in the output with dummy data.
+*   `SOURCE`: Path to the input API specification file, a URL, or `-` to read from stdin.
 
-Converter.convert({
-  from: 'swagger_1',
-  to: 'swagger_2',
-  source: 'https://api.gettyimages.com/swagger/api-docs',
-}, function(err, converted) {
-  console.log(converted.stringify());
-  // For yaml and/or OpenApi field order output replace above line
-  // with an options object like below
-  //   var  options = {syntax: 'yaml', order: 'openapi'}
-  //   console.log(converted.stringify(options));
-})
-```
-### Callback vs Promises
-This library has full support for both callback and promises.
-All async functions return promises but also will execute callback if provided.
+### Library Usage (Planned)
 
-```js
-var Converter = require('api-spec-converter');
+```python
+from api_spec_converter_py import APIConverter
 
-Converter.convert({
-  from: 'swagger_1',
-  to: 'swagger_2',
-  source: 'https://api.gettyimages.com/swagger/api-docs',
-})
-.then(function(converted) {
-  console.log(converted.stringify());
-});
-```
-### Advanced features:
-```js
-var Converter = require('api-spec-converter');
-Converter.convert({
-  from: 'swagger_1',
-  to: 'swagger_2',
-  source: 'https://api.gettyimages.com/swagger/api-docs',
-})
-  .then(function(converted) {
-    // [Optional] Fill missing fields with dummy values
-    converted.fillMissing();
-
-    // [Optional] Validate converted spec
-    return converted.validate()
-      .then(function (result) {
-        if (result.errors)
-          return console.error(JSON.stringify(errors, null, 2));
-        if (result.warnings)
-          return console.error(JSON.stringify(warnings, null, 2));
-
-        fs.writeFileSync('swagger2.json', converted.stringify());
-      });
-  });
+# Example (API may change)
+# converter = APIConverter()
+# try:
+#     # Load from a file path
+#     swagger_spec = converter.load_spec('path/to/swagger.json', from_format='swagger_2')
+#
+#     # Convert to OpenAPI 3
+#     openapi_spec = swagger_spec.convert_to('openapi_3')
+#
+#     # Stringify to YAML
+#     yaml_output = openapi_spec.stringify(syntax='yaml', order='openapi')
+#     print(yaml_output)
+#
+#     # Or convert directly:
+#     # result_spec = converter.convert(
+#     # source='path/to/input.json',
+#     # from_format='swagger_2',
+#     #     to_format='openapi_3'
+#     # )
+#     # print(result_spec.stringify(syntax='yaml'))
+#
+# except Exception as e:
+#     print(f"An error occurred: {e}")
 ```
 
-### Browser
-```js
-<script src="node_modules/api-spec-converter/dist/api-spec-converter.js"></script>
-APISpecConverter.convert(...)
+## Development
+
+### Project Structure
+
+*   `api_spec_converter_py/`: Main package directory.
+    *   `base_format.py`: Base class for all format handlers.
+    *   `cli.py`: Command-line interface script.
+    *   `formats/`: Module for specific format handlers (e.g., `swagger_2.py`, `openapi_3.py`).
+    *   `utils/`: Utility functions.
+*   `tests/`: Unit and integration tests.
+*   `setup.py`: Package setup script.
+*   `requirements.txt`: Python dependencies.
+
+### Running Tests
+
+```bash
+python -m unittest discover -s tests
+# Or, if you have specific test files:
+# python -m unittest tests.test_cli
+# python -m unittest tests.test_base_format
 ```
-
-## Supported Formats
-
-* [Swagger 1.x](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/1.2.md) (swagger_1)
-* [OpenAPI(fka Swagger) 2.0](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md) (swagger_2)
-* [OpenAPI 3.0.x](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md) (openapi_3)
-* [I/O Docs](https://github.com/mashery/iodocs) (io_docs)
-* [API Blueprint](https://github.com/apiaryio/api-blueprint/blob/master/API%20Blueprint%20Specification.md) (api_blueprint)
-* [Google API Discovery](https://developers.google.com/discovery/v1/reference/apis) (google)
-* [RAML](http://raml.org/spec.html) (raml)
-* [WADL](http://www.w3.org/Submission/wadl/) (wadl)
-
-
-## Conversion Table
-
-|from:             |swagger_1|swagger_2|openapi_3|io_docs|api_blueprint|google|raml|wadl|
--------------------|:-------:|:-------:|:-----:|:-----:|:-----------:|:----:|:--:|:--:|
-|to swagger_1      |  n/a    |         |       |       |             |      |    |    |
-|to swagger_2      | :white_check_mark: |    n/a  | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-|to openapi_3      |   :eight_spoked_asterisk:     | :white_check_mark: |  n/a  |   :eight_spoked_asterisk:  | :eight_spoked_asterisk: |  :eight_spoked_asterisk:   | :eight_spoked_asterisk:  | :eight_spoked_asterisk:  |
-|to io_docs        |         |         |       |  n/a  |             |      |    |    |
-|to api_blueprint  |         |         |       |       |    n/a      |      |    |    |
-|to google         |         |         |       |       |             |  n/a |    |    |
-|to raml           |         |         |       |       |             |      | n/a|    |
-|to wadl           |         |         |       |       |             |      |    | n/a|
-
-#### Key
-* :white_check_mark: - direct conversion
-* :eight_spoked_asterisk: - conversion via swagger_2
 
 ## Contributing
-Contributions are welcome and encouraged.
 
-### Testing
-Please add a test case if you're adding features or fixing bugs. To run the tests:
+Contributions are welcome! Please feel free to submit pull requests or open issues.
+If you plan to add a new format handler, please look at the existing handlers in `api_spec_converter_py/formats/` and the `BaseFormat` class for guidance.
 
-```bash
-npm test
-```
+Key areas for contribution:
+*   Implementing new format handlers (RAML, API Blueprint, etc.).
+*   Improving the accuracy and completeness of existing conversions (Swagger 2 <-> OpenAPI 3).
+*   Enhancing validation logic for each format.
+*   Adding more comprehensive tests, especially integration tests using real-world specs.
+*   Refining the library API for programmatic usage.
 
-In case you need to override the expected outputs, due to a justified and verified change, run this:
-```bash
-WRITE_GOLDEN=true npm test
-```
-### Releases
-```
-npm run browserify
-git commit -a -m "Build browser distribution"
-npm version minor # or major/patch
-npm publish
-git push --follow-tags
-```
+## License
 
-[twitter-image]: https://img.shields.io/twitter/url/http/lucybot.github.io/api-spec-converter.svg?style=social
-[twitter-link]: https://twitter.com/intent/tweet?text=Convert+between+API+description+formats+such+as+Swagger+and+RAML:&url=http%3A%2F%2Flucybot.github.io%2Fapi-spec-converter
-[gitter-image]: https://img.shields.io/gitter/room/lucybot/api-spec-converter.svg
-[gitter-link]: https://gitter.im/lucybot/api-spec-converter
-[npm-image]: https://img.shields.io/npm/v/api-spec-converter.svg
-[npm-link]: https://npmjs.org/package/api-spec-converter
-[travis-image]: https://img.shields.io/travis/LucyBot-Inc/api-spec-converter.svg
-[travis-link]: https://travis-ci.org/LucyBot-Inc/api-spec-converter
-[deps-image]: https://img.shields.io/david/lucybot/api-spec-converter.svg
-[deps-link]: https://david-dm.org/lucybot/api-spec-converter
-[devdeps-image]: https://img.shields.io/david/dev/lucybot/api-spec-converter.svg
-[devdeps-link]: https://david-dm.org/lucybot/api-spec-converter#info=devDependencies
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file (TODO: Add LICENSE file, assuming MIT based on original).
+```
