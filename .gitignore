@@ -76,3 +76,8 @@ pdm.lock
 .markdownlint/
 .cursor/rules/*.mdc
 .pdm-python
+
+openapi_original.json
+openapi_reconverted.json
+openapi.yaml
+swagger.json
