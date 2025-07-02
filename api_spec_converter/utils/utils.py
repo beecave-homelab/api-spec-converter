@@ -1,10 +1,14 @@
 """Utility functions for the API specification converter."""
+
 import json
 import yaml
 
+
 class ParseError(Exception):
     """Custom exception raised for errors during JSON or YAML parsing."""
+
     pass
+
 
 def parse_json(data_string: str) -> dict:
     """
@@ -23,6 +27,7 @@ def parse_json(data_string: str) -> dict:
         return json.loads(data_string)
     except json.JSONDecodeError as e:
         raise ParseError(f"Failed to parse JSON: {e}")
+
 
 def parse_yaml(data_string: str) -> dict:
     """
@@ -43,12 +48,14 @@ def parse_yaml(data_string: str) -> dict:
     except yaml.YAMLError as e:
         raise ParseError(f"Failed to parse YAML: {e}")
 
+
 def remove_none_values(obj: any) -> any:
     """
-    Recursively removes keys from dictionaries if their value is None.
+    Recursively removes keys from dictionaries if their value is None,
+    and removes `None` items from lists.
 
-    This function modifies the input object (dictionary or list containing dictionaries)
-    in-place. It traverses nested dictionaries and lists of dictionaries.
+    This function modifies the input object (dictionary or list) in-place.
+    It traverses nested dictionaries and lists.
 
     Args:
         obj (any): The object (typically a dictionary or list) from which
@@ -66,14 +73,17 @@ def remove_none_values(obj: any) -> any:
                 # Recursively call for nested dictionaries or lists.
                 remove_none_values(obj[key])
     elif isinstance(obj, list):
-        # For lists, iterate through items and apply recursively.
-        # Note: This does not remove None items from the list itself,
-        # only from dictionaries within the list.
-        # If removing None items from list is desired, list comprehension would be:
-        # obj[:] = [remove_none_values(item) for item in obj if item is not None]
-        # However, current behavior matches typical 'removeNonValues' which focuses on object keys.
+        # We need to iterate over a copy of the list to safely remove items.
+        # Or, building a new list and assigning back with a slice is cleaner.
+        new_list = []
         for item in obj:
-            remove_none_values(item)
+            # First, check if the item itself is None
+            if item is not None:
+                # If it's not None, recursively clean it
+                remove_none_values(item)
+                new_list.append(item)
+        # Modify the original list in-place to reflect the changes
+        obj[:] = new_list
     return obj
 
 
@@ -85,12 +95,15 @@ def remove_none_values(obj: any) -> any:
 # the spec loading process of `BaseFormat`. They could be refactored here if
 # they gain broader utility outside of `BaseFormat`.
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Example Usage for testing remove_none_values
     print("Testing remove_none_values:")
     test_dict_1 = {
-        "a": 1, "b": None, "c": {"d": "hello", "e": None, "f": [1, None, {"g": 2, "h": None}]},
-        "i": None, "j": [None, "world", {"k": None, "l": "visible"}]
+        "a": 1,
+        "b": None,
+        "c": {"d": "hello", "e": None, "f": [1, None, {"g": 2, "h": None}]},
+        "i": None,
+        "j": [None, "world", {"k": None, "l": "visible"}],
     }
     print("Original 1:", test_dict_1)
     remove_none_values(test_dict_1)
@@ -98,7 +111,6 @@ if __name__ == '__main__':
     # Expected: {'a': 1, 'c': {'d': 'hello', 'f': [1, {'g': 2}]}, 'j': ['world', {'l': 'visible'}]}
     # Correction: List items that are None are not removed by this implementation, only keys in dicts.
     # Expected based on current code: {'a': 1, 'c': {'d': 'hello', 'f': [1, None, {'g': 2}]}, 'j': [None, 'world', {'l': 'visible'}]}
-
 
     test_dict_2_yaml_str = """
     name: Test API
