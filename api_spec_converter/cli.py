@@ -245,7 +245,9 @@ def main(
                 click.echo(json.dumps(validation_result["errors"], indent=2), err=True)
             if validation_result.get("warnings"):
                 click.echo("Validation Warnings:", err=True)
-                click.echo(json.dumps(validation_result["warnings"], indent=2), err=True)
+                click.echo(
+                    json.dumps(validation_result["warnings"], indent=2), err=True
+                )
             if not validation_result.get("errors") and not validation_result.get(
                 "warnings"
             ):

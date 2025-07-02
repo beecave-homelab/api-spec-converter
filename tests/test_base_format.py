@@ -54,9 +54,7 @@ class TestBaseFormat(unittest.TestCase):
 
     def test_initialization(self):
         self.assertEqual(self.base_format.spec, self.sample_spec_dict)
-        self.assertIn(
-            "openapi", ATTR_ORDER
-        )  # Check ATTR_ORDER is accessible
+        self.assertIn("openapi", ATTR_ORDER)  # Check ATTR_ORDER is accessible
 
     def test_stringify_json_default_order(self):
         # Default is 'openapi' order
