@@ -7,7 +7,6 @@ authors = [
     { name = "elvee", email = "lowie@beecave.nl" },
 ]
 license = { text = "MIT" }
-homepage = "https://github.com/beecave-homelab/api-spec-converter"
 requires-python = ">=3.11"
 
 dependencies = [
@@ -31,3 +30,6 @@ test = [
     "pylint",
     "pytest",
 ]
+
+[project.urls]
+Homepage = "https://github.com/beecave-homelab/api-spec-converter"
