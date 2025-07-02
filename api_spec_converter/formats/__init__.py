@@ -11,7 +11,8 @@ Format handler modules (like `swagger_2.py`, `openapi_3.py`) should be
 imported here to ensure their classes are registered upon package initialization.
 """
 
-FORMAT_REGISTRY: dict[str, type] = {} # type: ignore[type-arg]
+FORMAT_REGISTRY: dict[str, type] = {}  # type: ignore[type-arg]
+
 
 def register_format(name: str):
     """
@@ -24,7 +25,8 @@ def register_format(name: str):
     Returns:
         Callable: The decorator function that registers the class.
     """
-    def decorator(cls: type) -> type: # type: ignore[type-arg]
+
+    def decorator(cls: type) -> type:  # type: ignore[type-arg]
         """
         Registers the decorated class with the given name.
 
@@ -35,10 +37,14 @@ def register_format(name: str):
             type: The registered class.
         """
         if name in FORMAT_REGISTRY:
-            print(f"Warning: Format '{name}' is being re-registered. Overwriting previous entry.")
+            print(
+                f"Warning: Format '{name}' is being re-registered. Overwriting previous entry."
+            )
         FORMAT_REGISTRY[name] = cls
         return cls
+
     return decorator
+
 
 # Import all available format handler modules here.
 # This ensures that each format's @register_format decorator is executed,
