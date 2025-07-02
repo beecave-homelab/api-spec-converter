@@ -11,7 +11,7 @@ Core components:
 - `cli`: The command-line interface module.
 - `utils`: Utility functions.
 
-For CLI usage, see `python -m api_spec_converter_py.cli --help`.
+For CLI usage, see `python -m api_spec_converter.cli --help`.
 For library usage, you would typically import specific format handlers or a
 high-level converter class (if one is added later).
 """
@@ -27,4 +27,4 @@ high-level converter class (if one is added later).
 # For now, keeping it minimal as the primary interaction for library users
 # would likely be through format classes or a future facade/converter class.
 
-__version__ = "0.1.0" # TODO: Sync with setup.py and cli.py version
+__version__ = "0.1.0"  # TODO: Sync with setup.py and cli.py version
