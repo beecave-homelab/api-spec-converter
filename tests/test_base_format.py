@@ -3,7 +3,7 @@ import json
 import yaml
 from unittest.mock import patch, mock_open
 
-from api_spec_converter_py.base_format import BaseFormat, ATTR_ORDER
+from api_spec_converter.base_format import BaseFormat, ATTR_ORDER
 
 # A very simple concrete implementation of BaseFormat for testing purposes
 class ConcreteFormat(BaseFormat):

@@ -3,9 +3,9 @@ import json
 from click.testing import CliRunner
 from unittest.mock import patch, MagicMock
 
-from api_spec_converter_py.cli import main as cli_main
-from api_spec_converter_py.base_format import BaseFormat
-from api_spec_converter_py.formats import register_format, FORMAT_REGISTRY
+from api_spec_converter.cli import main as cli_main
+from api_spec_converter.base_format import BaseFormat
+from api_spec_converter.formats import register_format, FORMAT_REGISTRY
 
 # --- Mock Format Classes for Testing ---
 @register_format("mock_format_a")

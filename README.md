@@ -71,7 +71,7 @@ api-spec-converter-py --from-format swagger_2 --to-format openapi_3 --syntax yam
 ### Library Usage (Planned)
 
 ```python
-from api_spec_converter_py import APIConverter
+from api_spec_converter import APIConverter
 
 # Example (API may change)
 # converter = APIConverter()

@@ -1,5 +1,5 @@
 import unittest
-from api_spec_converter_py.utils.utils import remove_none_values, parse_json, parse_yaml, ParseError
+from api_spec_converter.utils.utils import remove_none_values, parse_json, parse_yaml, ParseError
 
 class TestUtils(unittest.TestCase):
 

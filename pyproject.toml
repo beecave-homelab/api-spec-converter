@@ -1,0 +1,33 @@
+[project]
+name = "api-spec-converter"
+version = "0.1.0"
+description = "A Python port of the api-spec-converter utility."
+readme = "README.md"
+authors = [
+    { name = "elvee", email = "lowie@beecave.nl" },
+]
+license = { text = "MIT" }
+homepage = "https://github.com/beecave-homelab/api-spec-converter"
+requires-python = ">=3.11"
+
+dependencies = [
+    "click",
+    "requests",
+    "PyYAML",
+    "jsonschema",
+]
+
+[project.scripts]
+api-spec-converter = "api_spec_converter.cli:main"
+
+[tool.pdm]
+# PDM-specific settings can be added here
+
+[tool.pdm.dev-dependencies]
+test = [
+    "PyYAML",
+    "click",
+    "ruff",
+    "pylint",
+    "pytest",
+]
