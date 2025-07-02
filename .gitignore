@@ -74,3 +74,5 @@ pdm.lock
 
 # Markdownlint
 .markdownlint/
+.cursor/rules/*.mdc
+.pdm-python
